@@ -1,0 +1,91 @@
+---
+title: "DRAYMOND Analysis of Kawhi Leonard and Matthew Dellavedova"
+author: "Azuka Atum"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r packages and summary data, message=FALSE, warning=FALSE}
+#install.packages("ggplot2")
+#install.packages("dplyr")
+#install.packages("fivethirtyeight")
+#install.packages("tidyverse")
+#install.packages("lemon")
+
+library("lemon")
+library("ggplot2")
+library("dplyr")
+library("fivethirtyeight")
+library("tidyverse")
+
+#check datasets in the package for nba_draymond
+data(package="fivethirtyeight")
+
+#Defensive Rating Accounting for Yielding Minimal Openness by Nearest Defender
+```
+
+```{r caption="Variable assignment and summary statistics."}
+#assign set to variable and view it
+#
+nba = nba_draymond
+head(nba)
+dim(nba)
+
+summary(nba$possessions)
+
+summary(nba$draymond)
+
+```
+
+
+```{r caption="Filter out Kawhi and Dellavedova", render = lemon_print}
+
+#Filter out Kawhi and Dellavedova
+# 
+klaw = filter(nba, player == "Kawhi Leonard")
+klaw
+
+delly = filter(nba, player == "Matthew Dellavedova") 
+delly
+mean(delly$possessions)
+
+#plot the graphs against each other
+p = ggplot() + 
+  geom_line(data=klaw, aes(x = season, y = draymond, color = "blue")) + 
+  geom_line(data= delly, aes(x = season, y = draymond, color = "red")) + 
+  xlab('DRAYMOND') + 
+  ylab('SEASON') + 
+  labs(color = 'Player', values = c("blue" = "Kawhi", "Dellavedova" = "red")) + ggtitle( "Comparing League DRAYMOND scores (green): \n Kawhi (blue) and Dellavedova (red)")
+print(p)
+
+```
+
+
+
+```{r caption= "linear model for Kawhi, Dellavedova, against the whole NBA DRAYMOND scores."}
+
+lm1= lm(draymond ~ possessions, data =klaw)
+lm2= lm(draymond ~ possessions, data =delly)
+lm3= lm(draymond ~ possessions, data =nba)
+plot(draymond ~ possessions, data = nba, 
+     xlab = "Possessions", 
+     ylab = "DRAYMOND",
+     cex = 0.6, col= "grey") 
+
+abline(lm1,  col="blue") 
+abline(lm2, col="red")
+abline(lm3, col="green")
+title(main= "Comparing League DRAYMOND Model(green) \n to Kawhi (blue) and Dellavedova (red)")
+
+
+mean(klaw$draymond)
+mean(delly$draymond)
+
+```
