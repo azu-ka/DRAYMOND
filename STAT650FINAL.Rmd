@@ -38,6 +38,7 @@ nba = nba_draymond
 head(nba)
 dim(nba)
 
+
 summary(nba$possessions)
 
 summary(nba$draymond)
@@ -51,10 +52,14 @@ summary(nba$draymond)
 # 
 klaw = filter(nba, player == "Kawhi Leonard")
 klaw
+mean(klaw$possessions)
 
 delly = filter(nba, player == "Matthew Dellavedova") 
 delly
 mean(delly$possessions)
+
+mean(klaw$draymond)
+mean(delly$draymond)
 
 #plot the graphs against each other
 p = ggplot() + 
@@ -85,7 +90,6 @@ abline(lm3, col="green")
 title(main= "Comparing League DRAYMOND Model(green) \n to Kawhi (blue) and Dellavedova (red)")
 
 
-mean(klaw$draymond)
-mean(delly$draymond)
+
 
 ```
